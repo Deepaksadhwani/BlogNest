@@ -2,16 +2,19 @@ import axios from "axios";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { SERVER_URL } from "./utils/constants";
 import Cart from "./components/Cart";
+import Shimmer from "./utils/Shimmer";
 
 const App = () => {
   const refTitle = useRef<HTMLInputElement>(null);
   const refAuthor = useRef<HTMLInputElement>(null);
   const refContent = useRef<HTMLTextAreaElement>(null);
+  const [loading, setLoading] = useState<boolean>(true);
   const [blogList, setBlogList] = useState<
     { id: number; title: string; author: string; content: string }[]
   >([]);
 
   const addBlogHandler = useCallback(async () => {
+    setLoading(true);
     if (refTitle.current && refAuthor.current && refContent.current) {
       const blogPost = {
         id: blogList[blogList.length - 1]?.id + 1,
@@ -29,16 +32,22 @@ const App = () => {
         refTitle.current.value = "";
         refAuthor.current.value = "";
         refContent.current.value = "";
-        alert("added data");
       } catch (error) {
         console.error("Error posting blog:", error);
+      }finally{
+        setTimeout(() => {
+          setLoading(false)
+
+        }, 500);
       }
     } else {
+      setLoading(false);
       console.error("One or more refs are null");
     }
-  }, []);
+  }, [blogList]);
 
   useEffect(() => {
+    let timer: NodeJS.Timeout;
     const getBlogs = async () => {
       try {
         const res = await axios.get(`${SERVER_URL}getBlog`);
@@ -47,12 +56,19 @@ const App = () => {
         console.log(blogList);
       } catch (error) {
         console.error(error);
+      } finally {
+        timer = setTimeout(() => {
+          setLoading(false);
+        }, 700);
       }
     };
     getBlogs();
-  }, [addBlogHandler]);
+    return () => clearTimeout(timer);
+  }, []);
 
-  return (
+  return loading ? (
+    <Shimmer />
+  ) : (
     <div className="flex min-h-screen flex-col items-center bg-gradient-to-bl from-gray-700 via-blue-200 to-gray-700 p-6">
       <div className="mb-6 w-full max-w-lg rounded-lg bg-white p-6 shadow-md">
         <h1 className="mb-4 text-2xl font-bold text-gray-800">

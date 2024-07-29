@@ -46,6 +46,6 @@ app.post("/postBlog", (req, res) => {
         res.status(500).json({ message: "Failed to add blog" });
     }
 });
-app.listen(4000, () => {
+app.listen(3000, () => {
     console.log("server is running");
 });

@@ -10,3 +10,5 @@ export const commentSchema = z.object({
   blogId: number(),
   text: string(),
 });
+
+

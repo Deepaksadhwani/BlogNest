@@ -76,6 +76,19 @@ app.get("/fetchComment", (req, res) => __awaiter(void 0, void 0, void 0, functio
         res.status(400).json({ message: "invalid input found." });
     }
 }));
-app.listen(3000, () => {
-    console.log("server is running");
-});
+app.delete("/deleteComment/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    const parsedId = parseInt(id);
+    try {
+        const response = yield (0, CommentController_1.deleteComment)(parsedId);
+        console.log(response);
+        res.status(200).json({
+            message: "Comment has been successfully deleted",
+            data: response,
+        });
+    }
+    catch (error) {
+        res.status(400).json({ message: "invalid input found." });
+    }
+}));
+app.listen(3000);

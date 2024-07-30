@@ -3,6 +3,7 @@ import cors from "cors";
 import { fetchBlog, insertBlog } from "./controllers/blogController";
 import { blogSchema, commentSchema } from "./types";
 import {
+  deleteComment,
   fetchCommentForBlog,
   insertComment,
 } from "./controllers/CommentController";
@@ -69,6 +70,19 @@ app.get("/fetchComment", async (req, res) => {
   }
 });
 
-app.listen(3000, () => {
-  console.log("server is running");
+app.delete("/deleteComment/:id", async (req: any, res) => {
+  const { id } = req.params;
+  const parsedId = parseInt(id);
+  try {
+    const response = await deleteComment(parsedId);
+    console.log(response);
+    res.status(200).json({
+      message: "Comment has been successfully deleted",
+      data: response,
+    });
+  } catch (error) {
+    res.status(400).json({ message: "invalid input found." });
+  }
 });
+
+app.listen(3000);

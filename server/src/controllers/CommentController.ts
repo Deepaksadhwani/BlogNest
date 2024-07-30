@@ -24,7 +24,7 @@ export const fetchCommentForBlog = async (blogId: number) => {
 export const deleteComment = async (id: number) => {
   const res = await prisma.comment.delete({
     where: {
-      id,
+      id: id,
     },
   });
   return res;

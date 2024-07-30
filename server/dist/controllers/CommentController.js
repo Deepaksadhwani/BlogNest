@@ -34,7 +34,7 @@ exports.fetchCommentForBlog = fetchCommentForBlog;
 const deleteComment = (id) => __awaiter(void 0, void 0, void 0, function* () {
     const res = yield prisma.comment.delete({
         where: {
-            id,
+            id: id,
         },
     });
     return res;

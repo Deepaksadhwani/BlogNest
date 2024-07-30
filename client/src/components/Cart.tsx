@@ -1,5 +1,7 @@
-import { FC, useState } from "react";
+import { FC, useRef, useState } from "react";
 import Comment from "./Comment";
+import axios from "axios";
+import { SERVER_URL } from "@/utils/constants";
 
 interface CartProps {
   id: number;
@@ -10,6 +12,27 @@ interface CartProps {
 
 const Cart: FC<CartProps> = ({ id, title, author, content }) => {
   const [toggle, setToggle] = useState<boolean>(false);
+  const [commentText, setCommentText] = useState<string>("");
+
+  const getData = (func: ()=> void) => {
+    func();
+  }
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setCommentText(event.target.value);
+  };
+
+  const addCommentHandler = async () => {
+    const res = await axios.post(`${SERVER_URL}postComment`, {
+      text: commentText,
+      blogId: id,
+    });
+  
+    console.log(res);
+  };
+
+  
+
   return (
     <div className="relative mb-4 w-[70%] rounded-lg border border-gray-200 bg-white p-6 font-semibold shadow-md transition-all duration-300 hover:scale-105 hover:bg-gray-900 hover:text-gray-200">
       <div>
@@ -31,15 +54,24 @@ const Cart: FC<CartProps> = ({ id, title, author, content }) => {
             <div className="flex w-full flex-col justify-center space-y-5 pt-3">
               <div className="mx-auto">
                 <input
+                  onChange={handleInputChange}
+                  value={commentText}
                   type="text"
                   className="border-2 border-gray-300 p-[6px] text-black focus:outline-none focus:ring-1 focus:ring-blue-500"
                 />
-                <button className="rounded bg-blue-400 p-2 font-semibold text-white">
+                <button
+                  onClick={addCommentHandler}
+                  className="rounded bg-blue-400 p-2 font-semibold text-white"
+                >
                   Add Comment
                 </button>
               </div>
-
-              <Comment blogId={id} />
+              <div className="w-full rounded-2xl bg-gradient-to-r from-gray-50 to-gray-100 p-8 shadow-2xl">
+                <h2 className="mb-4 text-center text-4xl font-extrabold text-gray-800">
+                  Comments
+                </h2>
+                <Comment onGetData={getData} id={id} />
+              </div>
             </div>
           </div>
         )}

@@ -12,16 +12,6 @@ interface CartProps {
 
 const Cart: FC<CartProps> = ({ id, title, author, content }) => {
   const [toggle, setToggle] = useState<boolean>(false);
-  const refInput = useRef<HTMLInputElement>(null);
-
-  const addCommentHandler = async () => {
-    const res = await axios.post(`${SERVER_URL}postComment`, {
-      text: refInput.current?.value,
-      blogId: id,
-    });
-
-    console.log(res);
-  };
 
   const deleteBlogHandle = async () => {
     const res = await axios.delete(`${SERVER_URL}deleteBlog/${id}`);
@@ -47,19 +37,6 @@ const Cart: FC<CartProps> = ({ id, title, author, content }) => {
             <hr />
 
             <div className="flex w-full flex-col justify-center space-y-5 pt-3">
-              <div className="mx-auto">
-                <input
-                  ref={refInput}
-                  type="text"
-                  className="border-2 border-gray-300 p-[6px] text-black focus:outline-none focus:ring-1 focus:ring-blue-500"
-                />
-                <button
-                  onClick={addCommentHandler}
-                  className="rounded bg-blue-400 p-2 font-semibold text-white"
-                >
-                  Add Comment
-                </button>
-              </div>
               <div className="w-full rounded-2xl bg-gradient-to-r from-gray-50 to-gray-100 p-8 shadow-2xl">
                 <h2 className="mb-4 text-center text-4xl font-extrabold text-gray-800">
                   Comments
@@ -73,7 +50,7 @@ const Cart: FC<CartProps> = ({ id, title, author, content }) => {
       <button onClick={deleteBlogHandle}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          className="absolute right-14 top-6 size-8 cursor-pointer hover:scale-110 hover:text-gray-200"
+          className="absolute right-14 top-6 size-8 cursor-pointer hover:scale-110 hover:text-red-600"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -93,7 +70,7 @@ const Cart: FC<CartProps> = ({ id, title, author, content }) => {
           viewBox="0 0 24 24"
           strokeWidth={1.5}
           stroke="currentColor"
-          className="absolute right-3 top-6 size-8 cursor-pointer hover:scale-110 hover:text-gray-200"
+          className="absolute right-3 top-6 size-8 cursor-pointer hover:scale-110 hover:text-lime-600"
         >
           <path
             strokeLinecap="round"

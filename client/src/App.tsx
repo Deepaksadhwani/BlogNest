@@ -13,11 +13,24 @@ const App = () => {
     { id: number; title: string; author: string; content: string }[]
   >([]);
 
-  const addBlogHandler = useCallback(async () => {
+
+
+  const getBlogs = async () => {
+    try {
+      const res = await axios.get(`${SERVER_URL}getBlog`);
+      setBlogList(res.data.data);
+      console.log(res.data);
+      console.log(blogList);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const addBlogHandler = async () => {
     setLoading(true);
     if (refTitle.current && refAuthor.current && refContent.current) {
       const blogPost = {
-        id: blogList[blogList.length - 1]?.id + 1,
+        id: blogList[blogList.length - 1]?.id + 1 || 1,
         title: refTitle.current.value,
         author: refAuthor.current.value,
         content: refContent.current.value,
@@ -32,44 +45,30 @@ const App = () => {
         refTitle.current.value = "";
         refAuthor.current.value = "";
         refContent.current.value = "";
+        getBlogs();
       } catch (error) {
         console.error("Error posting blog:", error);
-      }finally{
+      } finally {
         setTimeout(() => {
-          setLoading(false)
-
+          setLoading(false);
         }, 500);
       }
     } else {
       setLoading(false);
       console.error("One or more refs are null");
     }
-  }, [blogList]);
+  };
 
   useEffect(() => {
-    let timer: NodeJS.Timeout;
-    const getBlogs = async () => {
-      try {
-        const res = await axios.get(`${SERVER_URL}getBlog`);
-        setBlogList(res.data.data);
-        console.log(res.data);
-        console.log(blogList);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        timer = setTimeout(() => {
-          setLoading(false);
-        }, 700);
-      }
-    };
+    setLoading(false);
     getBlogs();
-    return () => clearTimeout(timer);
   }, []);
 
   return loading ? (
     <Shimmer />
   ) : (
-    <div className="flex min-h-screen flex-col items-center bg-gradient-to-bl from-gray-700 via-blue-200 to-gray-700 p-6">
+    <div className="relative flex min-h-screen flex-col items-center bg-gradient-to-bl from-gray-700 via-blue-200 to-gray-700 p-6">
+      
       <div className="mb-6 w-full max-w-lg rounded-lg bg-white p-6 shadow-md">
         <h1 className="mb-4 text-2xl font-bold text-gray-800">
           Create a Blog Post
@@ -125,6 +124,7 @@ const App = () => {
             <Cart
               key={blog.id}
               id={blog.id}
+              onfetchblog={getBlogs}
               title={blog.title}
               author={blog.author}
               content={blog.content}

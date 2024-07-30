@@ -1,14 +1,16 @@
 import { SERVER_URL } from "@/utils/constants";
 import axios from "axios";
-import { FC, memo, useEffect, useState } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 
 interface commentProp {
   id: number;
 }
 const Comment: FC<commentProp> = ({ id }) => {
+  const refInput = useRef<HTMLInputElement>(null);
   const [commentList, setCommentList] = useState<
     { id: number; text: string; blogId: number }[]
   >([]);
+
 
   const fetchComments = async () => {
     const response = await axios.get(`${SERVER_URL}fetchComment`, {
@@ -21,13 +23,21 @@ const Comment: FC<commentProp> = ({ id }) => {
     setCommentList(filterList);
   };
 
+  const addCommentHandler = async () => {
+    const res = await axios.post(`${SERVER_URL}postComment`, {
+      text: refInput.current?.value,
+      blogId: id,
+    });
+    console.log(res);
+    fetchComments();
+  };
+
+
   const deleteCommentHandler = async (id: number) => {
     const response = await axios.delete(`${SERVER_URL}deleteComment/${id}`);
     fetchComments();
     console.log(response);
   };
-  
-  
 
   useEffect(() => {
     fetchComments();
@@ -36,6 +46,19 @@ const Comment: FC<commentProp> = ({ id }) => {
   console.log(commentList);
   return (
     <div className="transform rounded-2xl bg-white p-6 shadow-lg transition-transform hover:scale-105">
+      <div className="mx-auto flex justify-center ">
+        <input
+          ref={refInput}
+          type="text"
+          className="border-2 border-gray-300 p-[6px] text-black focus:outline-none focus:ring-1 focus:ring-blue-500"
+        />
+        <button
+          onClick={addCommentHandler}
+          className="rounded bg-blue-400 p-2 font-semibold text-white"
+        >
+          Add Comment
+        </button>
+      </div>
       <div className="flex items-start">
         <img
           src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS_wEF7ozJNdb34CDG7YSR62iuRtC4e7wR2jA&s"
@@ -52,8 +75,6 @@ const Comment: FC<commentProp> = ({ id }) => {
               >
                 <p className="mt-2 text-lg text-gray-700">{comment.text}</p>
                 <div className="flex space-x-2">
-                 
-
                   <button onClick={() => deleteCommentHandler(comment.id)}>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -79,4 +100,4 @@ const Comment: FC<commentProp> = ({ id }) => {
   );
 };
 
-export default  Comment;
+export default Comment;

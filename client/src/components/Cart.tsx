@@ -1,4 +1,5 @@
 import { FC, useState } from "react";
+import Comment from "./Comment";
 
 interface CartProps {
   id: number;
@@ -26,11 +27,19 @@ const Cart: FC<CartProps> = ({ id, title, author, content }) => {
               {content}
             </p>
             <hr />
-            <div className="pt-3 flex justify-center w-full">
-              <input type="text" className="focus:outline-none text-black border-2 border-gray-300 focus:ring-blue-500 focus:ring-2 p-[6px]" />
-              <button className="rounded bg-blue-400 p-2 font-semibold text-white">
-                Comment
-              </button>
+
+            <div className="flex w-full flex-col justify-center space-y-5 pt-3">
+              <div className="mx-auto">
+                <input
+                  type="text"
+                  className="border-2 border-gray-300 p-[6px] text-black focus:outline-none focus:ring-1 focus:ring-blue-500"
+                />
+                <button className="rounded bg-blue-400 p-2 font-semibold text-white">
+                  Add Comment
+                </button>
+              </div>
+
+              <Comment blogId={id} />
             </div>
           </div>
         )}

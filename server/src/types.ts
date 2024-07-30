@@ -11,4 +11,7 @@ export const commentSchema = z.object({
   text: string(),
 });
 
-
+export const EditSchema = z.object({
+  id: z.number(),
+  text: z.string(),
+});

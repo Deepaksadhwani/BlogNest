@@ -48,6 +48,18 @@ app.post("/postBlog", (req, res) => __awaiter(void 0, void 0, void 0, function* 
         res.status(500).json({ message: "Failed to add blog" });
     }
 }));
+app.delete("/deleteBlog/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    const intId = parseInt(id);
+    console.log(intId);
+    try {
+        const response = yield (0, blogController_1.deleteBlog)(intId);
+        res.status(200).json({ message: "successfully deleted", data: response });
+    }
+    catch (error) {
+        res.status(404).json({ message: "Invalid input found." });
+    }
+}));
 //comment related operation
 app.post("/postComment", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const parsed = types_1.commentSchema.safeParse(req.body);
@@ -91,4 +103,13 @@ app.delete("/deleteComment/:id", (req, res) => __awaiter(void 0, void 0, void 0,
         res.status(400).json({ message: "invalid input found." });
     }
 }));
+// app.put("/editComment", async (req, res) => {
+//   const parsed = EditSchema.safeParse(req.body);
+//   if (!parsed.success) {
+//     return res.status(400).json({ message: parsed });
+//   }
+//   const { id, text } = req.body;
+//   const response = await updateComment(id, text);
+//   res.status(200).json({ message: "successfully edited.", data: response });
+// });
 app.listen(3000);

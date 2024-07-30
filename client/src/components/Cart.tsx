@@ -12,26 +12,21 @@ interface CartProps {
 
 const Cart: FC<CartProps> = ({ id, title, author, content }) => {
   const [toggle, setToggle] = useState<boolean>(false);
-  const [commentText, setCommentText] = useState<string>("");
-
-  const getData = (func: ()=> void) => {
-    func();
-  }
-
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setCommentText(event.target.value);
-  };
+  const refInput = useRef<HTMLInputElement>(null);
 
   const addCommentHandler = async () => {
     const res = await axios.post(`${SERVER_URL}postComment`, {
-      text: commentText,
+      text: refInput.current?.value,
       blogId: id,
     });
-  
+
     console.log(res);
   };
 
-  
+  const deleteBlogHandle = async () => {
+    const res = await axios.delete(`${SERVER_URL}deleteBlog/${id}`);
+    console.log(res);
+  };
 
   return (
     <div className="relative mb-4 w-[70%] rounded-lg border border-gray-200 bg-white p-6 font-semibold shadow-md transition-all duration-300 hover:scale-105 hover:bg-gray-900 hover:text-gray-200">
@@ -54,8 +49,7 @@ const Cart: FC<CartProps> = ({ id, title, author, content }) => {
             <div className="flex w-full flex-col justify-center space-y-5 pt-3">
               <div className="mx-auto">
                 <input
-                  onChange={handleInputChange}
-                  value={commentText}
+                  ref={refInput}
                   type="text"
                   className="border-2 border-gray-300 p-[6px] text-black focus:outline-none focus:ring-1 focus:ring-blue-500"
                 />
@@ -70,12 +64,28 @@ const Cart: FC<CartProps> = ({ id, title, author, content }) => {
                 <h2 className="mb-4 text-center text-4xl font-extrabold text-gray-800">
                   Comments
                 </h2>
-                <Comment onGetData={getData} id={id} />
+                <Comment id={id} />
               </div>
             </div>
           </div>
         )}
       </div>
+      <button onClick={deleteBlogHandle}>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="absolute right-14 top-6 size-8 cursor-pointer hover:scale-110 hover:text-gray-200"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth={2}
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+          />
+        </svg>
+      </button>
       <div onClick={() => setToggle((prev) => !prev)}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -83,7 +93,7 @@ const Cart: FC<CartProps> = ({ id, title, author, content }) => {
           viewBox="0 0 24 24"
           strokeWidth={1.5}
           stroke="currentColor"
-          className="absolute right-3 top-6 size-8 cursor-pointer hover:text-gray-200"
+          className="absolute right-3 top-6 size-8 cursor-pointer hover:scale-110 hover:text-gray-200"
         >
           <path
             strokeLinecap="round"

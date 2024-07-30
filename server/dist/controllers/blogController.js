@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.fetchBlog = exports.insertBlog = void 0;
+exports.deleteBlog = exports.fetchBlog = exports.insertBlog = void 0;
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
 const insertBlog = (title, author, content) => __awaiter(void 0, void 0, void 0, function* () {
@@ -28,3 +28,13 @@ const fetchBlog = () => __awaiter(void 0, void 0, void 0, function* () {
     return res;
 });
 exports.fetchBlog = fetchBlog;
+const deleteBlog = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const res = yield prisma.blog.delete({
+        where: {
+            id,
+        },
+    });
+    console.log(res);
+    return res;
+});
+exports.deleteBlog = deleteBlog;

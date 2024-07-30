@@ -18,7 +18,17 @@ export const insertBlog = async (
 
 export const fetchBlog = async () => {
   const res = await prisma.blog.findMany();
-  console.log(res)
-  return res
-}
+  console.log(res);
+  return res;
+};
+
+export const deleteBlog = async (id: number) => {
+  const res = await prisma.blog.delete({
+    where: {
+      id,
+    },
+  });
+  console.log(res);
+  return res;
+};
 

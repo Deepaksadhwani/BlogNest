@@ -13,8 +13,6 @@ const App = () => {
     { id: number; title: string; author: string; content: string }[]
   >([]);
 
-
-
   const getBlogs = async () => {
     try {
       const res = await axios.get(`${SERVER_URL}getBlog`);
@@ -68,7 +66,6 @@ const App = () => {
     <Shimmer />
   ) : (
     <div className="relative flex min-h-screen flex-col items-center bg-gradient-to-bl from-gray-700 via-blue-200 to-gray-700 p-6">
-      
       <div className="mb-6 w-full max-w-lg rounded-lg bg-white p-6 shadow-md">
         <h1 className="mb-4 text-2xl font-bold text-gray-800">
           Create a Blog Post
